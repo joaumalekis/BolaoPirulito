@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="BolaoPirulito.Pages.LoginPage" 
+             xmlns:controls="clr-namespace:BolaoPirulito.Controls;assembly=BolaoPirulito"
+             BackgroundColor="#490505">
+    <Grid>
+        <ScrollView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="10" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="logo.png" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="100" Margin="0,50,0,30" />
+                <Label Grid.Row="1" Text="Bolão Pirulito" HorizontalTextAlignment="Center" TextColor="#ffffff" FontSize="25" FontAttributes="Bold"/>
+                <StackLayout Grid.Row="2" Spacing="15" Padding="20, 0, 20, 0" VerticalOptions="Center">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Entry Grid.Row="0" Grid.Column="0" Text="{Binding Email}" TextColor="White" Placeholder="E-mail" PlaceholderColor="White" Keyboard="Email" BackgroundColor="Transparent" HorizontalTextAlignment="Start"
+							HorizontalOptions="Fill" />
+                        <StackLayout Grid.Row="1" Grid.Column="0" BackgroundColor="White" />
+                    </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Entry Grid.Row="0" Grid.Column="0" Text="{Binding Senha}" TextColor="White" IsPassword="True" Placeholder="Senha" PlaceholderColor="White" BackgroundColor="Transparent" HorizontalTextAlignment="Start" HorizontalOptions="Fill" />
+                        <StackLayout Grid.Row="1" Grid.Column="0"  BackgroundColor="White" />
+                    </Grid>
+                    
+                    <controls:RoundedButton Text="ENTRAR" Margin="30, 0" BackgroundColor="#ffffff" BorderColor="Transparent" TextColor="#3758a0" FontAttributes="Bold" Command="{Binding LoginCommand}" />
+                    <controls:RoundedButton Text="ENTRAR COM FACEBOOK" Margin="30, 0" BackgroundColor="#4267b2" BorderColor="Transparent" TextColor="#ffffff" FontAttributes="Bold" Command="{Binding FacebookLoginCommand}" />
+                    <Label Text="Esqueci meu acesso!" HorizontalTextAlignment="Center" TextColor="#ffffff" FontSize="12" FontAttributes="Bold">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LembrarAcessoCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+                
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

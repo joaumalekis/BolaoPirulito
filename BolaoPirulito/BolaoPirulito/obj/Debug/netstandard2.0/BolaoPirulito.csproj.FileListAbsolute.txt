@@ -1,0 +1,12 @@
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\bin\Debug\netstandard2.0\BolaoPirulito.deps.json
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\bin\Debug\netstandard2.0\BolaoPirulito.dll
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\bin\Debug\netstandard2.0\BolaoPirulito.pdb
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.csprojResolveAssemblyReference.cache
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.csproj.CoreCompileInputs.cache
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.App.xaml.g.cs
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.MainPage.xaml.g.cs
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.Pages.LoginPage.xaml.g.cs
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.AssemblyInfoInputs.cache
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.AssemblyInfo.cs
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.dll
+D:\02_PROJETOS\BolaoPirulito\BolaoPirulito\BolaoPirulito\obj\Debug\netstandard2.0\BolaoPirulito.pdb
