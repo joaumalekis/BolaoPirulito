@@ -5,12 +5,10 @@ namespace BolaoPirulito
 {
     public partial class App : Application
     {
+        public static string Token { get; set; }
+
         public App()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
-
-            NavigationPage.SetBackButtonTitle(this, "Login");
-
             InitializeComponent();
 
             MainPage = new NavigationPage(new LoginPage()) { BarTextColor = Color.White };
