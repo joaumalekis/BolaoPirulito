@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BolaoPirulito.Pages.JogosPage"
+             Title="Apostas">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="MenuItem1" Order="Primary" Text="Salvar" Priority="0" Command="{Binding SalvarCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <ListView
+            x:Name="listFaturas"
+            BackgroundColor="#ffffff"
+            ItemsSource="{Binding Itens}"
+            IsGroupingEnabled="false"
+            HasUnevenRows ="True"
+            IsPullToRefreshEnabled="True"
+            RefreshCommand="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+            CachingStrategy="RetainElement">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame CornerRadius="10"  
+                               OutlineColor="Transparent" 
+                               Padding="0"
+                               Margin="10,10,10,10">
+                            <StackLayout Orientation="Horizontal"  Margin="10,0,10,0" Padding="0,10,0,10" >
+                                <Grid RowSpacing="0" ColumnSpacing="0" HorizontalOptions="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="130"/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="130"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding TimeA.Nome}" TextColor="#02041f" FontSize="14" VerticalTextAlignment="Center" HorizontalOptions="StartAndExpand"/>
+                                    <Entry Grid.Row="0" Grid.Column="1" Text="{Binding ApostaGolsTimeA}" WidthRequest="40" TextColor="#02041f" FontSize="14" Keyboard = "Keyboard.Telephone" BackgroundColor="LightGray" HorizontalOptions="StartAndExpand"/>
+                                    <Label Grid.Row="0" Grid.Column="2" Text="x" TextColor="#02041f" FontSize="14" VerticalTextAlignment="Center"/>
+                                    <Entry Grid.Row="0" Grid.Column="3" Text="{Binding ApostaGolsTimeB}" WidthRequest="40" TextColor="#02041f" FontSize="14" Keyboard = "Keyboard.Telephone" BackgroundColor="LightGray" HorizontalOptions="EndAndExpand" />
+                                    <Label Grid.Row="0" Grid.Column="4" Text="{Binding TimeB.Nome}" TextColor="#02041f" FontSize="14" VerticalTextAlignment="Center" HorizontalOptions="EndAndExpand"/>
+                                </Grid>
+                            </StackLayout>
+                            
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>

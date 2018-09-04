@@ -1,4 +1,5 @@
-﻿using BolaoPirulito.Pages;
+﻿using BolaoPirulito.Models;
+using BolaoPirulito.Pages;
 using Xamarin.Forms;
 
 namespace BolaoPirulito
@@ -6,6 +7,9 @@ namespace BolaoPirulito
     public partial class App : Application
     {
         public static string Token { get; set; }
+        public static string BaseUrl => "https://bolaopirulito.firebaseio.com/";
+
+        public static Apostador ApostadorLogado { get; set; }
 
         public App()
         {

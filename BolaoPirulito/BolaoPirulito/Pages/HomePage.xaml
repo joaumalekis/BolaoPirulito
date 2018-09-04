@@ -3,12 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BolaoPirulito.Pages.HomePage">
     <ContentPage.Content>
-        <StackLayout>
-            <Image Source="santos.png" WidthRequest="60" Aspect="AspectFit" />
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-
-        </StackLayout>
+        <ListView
+            x:Name="listFaturas"
+            BackgroundColor="#ffffff"
+            ItemsSource="{Binding Itens}"
+            IsGroupingEnabled="false"
+            HasUnevenRows ="True"
+            IsPullToRefreshEnabled="True"
+            RefreshCommand="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+            CachingStrategy="RetainElement">
+            <ListView.Header>
+                <StackLayout Padding="10,5,0,5" >
+                    <Label Text="Rodadas" FontSize="18" FontAttributes="Bold" TextColor="#02041f" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame CornerRadius="10"  
+                               OutlineColor="Transparent" 
+                               Padding="0"
+                               Margin="10,10,10,10">
+                            <StackLayout Orientation="Vertical" Margin="10,0,10,0" Padding="0,10,0,10" >
+                                <Label Text="{Binding Nome}" TextColor="#02041f" FontSize="14" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" HorizontalOptions="Start" />
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </ContentPage.Content>
 </ContentPage>
