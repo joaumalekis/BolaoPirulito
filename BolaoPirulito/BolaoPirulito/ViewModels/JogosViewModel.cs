@@ -20,6 +20,7 @@ namespace BolaoPirulito.ViewModels
         {
             _aposta = aposta;
             _itens = new ObservableCollection<Jogo>(_aposta.Rodada.Jogos);
+            _pontos = _aposta.Rodada.Jogos.Sum(p => p.Pontos);
         }
 
         private Aposta _aposta;
@@ -29,6 +30,17 @@ namespace BolaoPirulito.ViewModels
             set
             {
                 _aposta = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _pontos;
+        public int Pontos
+        {
+            get => _pontos;
+            set
+            {
+                _pontos = value;
                 OnPropertyChanged();
             }
         }
@@ -49,10 +61,35 @@ namespace BolaoPirulito.ViewModels
 
         private async Task SalvarCommandExecute()
         {
+            IsBusy = true;
             var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
             _aposta.Rodada.Jogos = _itens.ToList();
             await firebase.Child("Apostas").Child(_aposta.Id.ToString).PutAsync(_aposta);
+            IsBusy = false;
             await Navigation.PopAsync();
+        }
+
+        private Command _refreshCommand;
+        public Command RefreshCommand => _refreshCommand ?? (_refreshCommand = new Command(async () => await RefreshCommandExecute()));
+
+        private async Task RefreshCommandExecute()
+        {
+            IsBusy = true;
+            var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
+            var apostas = await firebase
+                .Child("Apostas")
+                .OrderByKey()
+                .OnceAsync<Aposta>();
+
+            var aposta = apostas.ToList().FirstOrDefault(p =>
+                p.Object?.Rodada?.Id == _aposta.Rodada?.Id && p.Object?.Apostador?.Id == App.ApostadorLogado?.Id)?.Object;
+            if (aposta?.Rodada?.Jogos != null)
+            {
+                Itens = new ObservableCollection<Jogo>(aposta.Rodada.Jogos);
+                Pontos = aposta.Rodada.Jogos.Sum(p => p.Pontos);
+            }
+
+            IsBusy = false;
         }
     }
 }

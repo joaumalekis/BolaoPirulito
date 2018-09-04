@@ -48,11 +48,22 @@ namespace BolaoPirulito.ViewModels
             }
         }
 
+
+        private Command _acessarTabelaCommand;
+        public Command AcessarTabelaCommand => _acessarTabelaCommand ?? (_acessarTabelaCommand = new Command(async (f) => await AcessarTabelaCommandExecute()));
+
+        private async Task AcessarTabelaCommandExecute()
+        {
+            await Navigation.PushAsync(new TabelaPage());
+        }
+
+
         private Command _selectItemCommand;
         public Command SelectItemCommand => _selectItemCommand ?? (_selectItemCommand = new Command(async (f) => await SelectItemCommandExecute((Rodada)f)));
 
         private async Task SelectItemCommandExecute(Rodada rodada)
         {
+            IsBusy = true;
             var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
             var apostas = await firebase
                 .Child("Apostas")
@@ -61,7 +72,7 @@ namespace BolaoPirulito.ViewModels
 
             var aposta = apostas.ToList().FirstOrDefault(p =>
                 p.Object?.Rodada?.Id == rodada?.Id && p.Object?.Apostador?.Id == App.ApostadorLogado?.Id)?.Object;
-
+            IsBusy = false;
             await Navigation.PushAsync(new JogosPage(aposta ?? new Aposta { Id = Guid.NewGuid(), Rodada = rodada, Apostador = App.ApostadorLogado}));
         }
 

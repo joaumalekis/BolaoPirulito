@@ -41,12 +41,12 @@
                     </Grid>
                     
                     <controls:RoundedButton Text="ENTRAR" Margin="30, 0" BackgroundColor="#ffffff" BorderColor="Transparent" TextColor="#3758a0" FontAttributes="Bold" Command="{Binding LoginCommand}" />
-                    <controls:RoundedButton Text="ENTRAR COM FACEBOOK" Margin="30, 0" BackgroundColor="#4267b2" BorderColor="Transparent" TextColor="#ffffff" FontAttributes="Bold" Command="{Binding FacebookLoginCommand}" />
+                    <!--<controls:RoundedButton Text="ENTRAR COM FACEBOOK" Margin="30, 0" BackgroundColor="#4267b2" BorderColor="Transparent" TextColor="#ffffff" FontAttributes="Bold" Command="{Binding FacebookLoginCommand}" />
                     <Label Text="Esqueci meu acesso!" HorizontalTextAlignment="Center" TextColor="#ffffff" FontSize="12" FontAttributes="Bold">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding LembrarAcessoCommand}" />
                         </Label.GestureRecognizers>
-                    </Label>
+                    </Label>-->
                 </StackLayout>
                 
             </Grid>

@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BolaoPirulito.Pages.HomePage">
+             x:Class="BolaoPirulito.Pages.HomePage"
+             Title="Rodadas">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="MenuItem1" Order="Primary" Text="Tabela" Priority="0" Command="{Binding AcessarTabelaCommand}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ListView
             x:Name="listFaturas"
@@ -11,14 +15,9 @@
             HasUnevenRows ="True"
             IsPullToRefreshEnabled="True"
             RefreshCommand="{Binding RefreshCommand}"
-            IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+            IsRefreshing="{Binding IsBusy}"
+            SelectedItem="{Binding SelectedItem}"
             CachingStrategy="RetainElement">
-            <ListView.Header>
-                <StackLayout Padding="10,5,0,5" >
-                    <Label Text="Rodadas" FontSize="18" FontAttributes="Bold" TextColor="#02041f" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                </StackLayout>
-            </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

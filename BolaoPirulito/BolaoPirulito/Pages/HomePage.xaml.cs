@@ -9,20 +9,19 @@ using Xamarin.Forms.Xaml;
 
 namespace BolaoPirulito.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class HomePage : ContentPage
-	{
-		public HomePage ()
-		{
-			InitializeComponent ();
-		    BindingContext = new HomeViewModel(Navigation);
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class HomePage : ContentPage
+    {
+        public HomePage()
+        {
+            InitializeComponent();
+            BindingContext = new HomeViewModel(Navigation);
         }
 
-	    protected override void OnAppearing()
-	    {
-	        base.OnAppearing();
-	        if (((HomeViewModel)BindingContext).Itens.Count == 0)
-	            ((HomeViewModel)BindingContext).RefreshCommand.Execute(false);
-	    }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            ((HomeViewModel)BindingContext).RefreshCommand.Execute(false);
+        }
     }
 }
