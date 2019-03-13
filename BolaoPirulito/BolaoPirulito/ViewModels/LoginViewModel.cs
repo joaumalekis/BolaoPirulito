@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Acr.UserDialogs;
 using BolaoPirulito.Interfaces;
-using System.Threading.Tasks;
-using Acr.UserDialogs;
 using BolaoPirulito.Models;
 using BolaoPirulito.Pages;
-using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace BolaoPirulito.ViewModels
@@ -57,9 +55,9 @@ namespace BolaoPirulito.ViewModels
             try
             {
                 App.Token = await _firebaseAuthenticator.LoginWithEmailPassword(Email, Password);
-                //await InserirApostadores();
-                //await InserirRodadas();
-                //await InserirTimesSerieA2018();
+                await InserirApostadores();
+                await InserirRodadas();
+                await InserirTimesSerieA2019();
                 App.ApostadorLogado = await GetApostadorLogado(Email);
                 await Navigation.PushAsync(new HomePage());
             }
@@ -113,6 +111,40 @@ namespace BolaoPirulito.ViewModels
             }
         }
 
+        private async Task InserirTimesSerieA2019()
+        {
+            var times = new[]
+            {
+                "Athletico-PR",
+                "Atlético-MG",
+                "Avaí",
+                "Bahia",
+                "Botafogo",
+                "CSA",
+                "Ceará",
+                "Chapecoense",
+                "Corinthians",
+                "Cruzeiro",
+                "Flamengo",
+                "Fluminense",
+                "Fortaleza",
+                "Goiás",
+                "Grêmio",
+                "Internacional",
+                "Palmeiras",
+                "Santos",
+                "São Paulo",
+                "Vasco"
+            };
+
+            foreach (var time in times)
+            {
+                var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
+                var id = Guid.NewGuid();
+                await firebase.Child("Times").Child(id.ToString()).PutAsync(new Time { Id = id, Nome = time });
+            }
+        }
+
         private async Task InserirApostadores()
         {
             var apostadores = new List<Apostador>
@@ -133,7 +165,7 @@ namespace BolaoPirulito.ViewModels
             foreach (var apostador in apostadores)
             {
                 var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-                
+
                 await firebase.Child("Apostadores").Child(apostador.Id.ToString).PutAsync(apostador);
             }
         }
@@ -145,8 +177,8 @@ namespace BolaoPirulito.ViewModels
             await firebase.Child("Rodadas").Child(id.ToString()).PutAsync(new Rodada
             {
                 Id = id,
-                Nome = $"Rodada {20}",
-                NumeroRodada = 20,
+                Nome = $"Rodada {1}",
+                NumeroRodada = 1,
                 Jogos = new List<Jogo>
                     {
                         new Jogo
@@ -155,7 +187,7 @@ namespace BolaoPirulito.ViewModels
                             TimeA = new Time{Id = Guid.Parse("5a52bb3f-e53e-42ab-bea4-6296aad5b10a"), Nome = "Ceará"},
                             TimeB = new Time{Id = Guid.Parse("eebd6b4c-299b-4c29-8ccc-f6053210125a"), Nome = "Santos"},
                             GolsTimeA = 0,
-                            GolsTimeB = 0
+                            GolsTimeB = 0,
                         },
                         new Jogo
                         {
@@ -238,9 +270,7 @@ namespace BolaoPirulito.ViewModels
                             GolsTimeB = 0
                         }
                     }
-
             });
-
         }
     }
 }
