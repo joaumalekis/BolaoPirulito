@@ -20,7 +20,7 @@ namespace BolaoPirulito.ViewModels
         {
             _aposta = aposta;
             _itens = new ObservableCollection<Jogo>(_aposta.Rodada.Jogos);
-            _pontos = _aposta.Rodada.Jogos.Sum(p => p.Pontos);
+            //_pontos = _aposta.Rodada.Jogos.Sum(p => p.Pontos);
         }
 
         private Aposta _aposta;
@@ -63,7 +63,7 @@ namespace BolaoPirulito.ViewModels
         {
             IsBusy = true;
             var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-            _aposta.Rodada.Jogos = _itens.ToList();
+            _aposta.Rodada.Jogos = _itens.ToArray();
             await firebase.Child("Apostas").Child(_aposta.Id.ToString).PutAsync(_aposta);
             IsBusy = false;
             await Navigation.PopAsync();
@@ -86,7 +86,7 @@ namespace BolaoPirulito.ViewModels
             if (aposta?.Rodada?.Jogos != null)
             {
                 Itens = new ObservableCollection<Jogo>(aposta.Rodada.Jogos);
-                Pontos = aposta.Rodada.Jogos.Sum(p => p.Pontos);
+                //Pontos = aposta.Rodada.Jogos.Sum(p => p.Pontos);
             }
 
             IsBusy = false;

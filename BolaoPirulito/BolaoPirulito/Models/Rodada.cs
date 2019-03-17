@@ -5,9 +5,8 @@ namespace BolaoPirulito.Models
 {
     public class Rodada
     {
-        public Guid Id { get; set; }
-        public string Nome { get; set; }
+        public string Id { get; set; }
         public int NumeroRodada { get; set; }
-        public List<Jogo> Jogos { get; set; }
+        public Jogo[] Jogos { get; set; }
     }
 }

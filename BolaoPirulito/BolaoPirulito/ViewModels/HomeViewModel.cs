@@ -87,6 +87,7 @@ namespace BolaoPirulito.ViewModels
                     return;
 
                 IsBusy = true;
+
                 Itens = await GetRodadas();
                 IsBusy = false;
             }
@@ -99,12 +100,37 @@ namespace BolaoPirulito.ViewModels
 
         public async Task<ObservableCollection<Rodada>> GetRodadas()
         {
-            var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-            var rodadas = await firebase
-                .Child("Rodadas")
-                .OrderByKey()
-                .OnceAsync<Rodada>();
-            return new ObservableCollection<Rodada>(rodadas.Select(p => p.Object).ToList());
+            try
+            {
+                var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
+                var rodadas = await firebase
+                    .Child("Jogos")
+                    .OrderByKey()
+                    .OnceAsync<Rodada>();
+                return new ObservableCollection<Rodada>(rodadas.Select(p => p.Object).ToList());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task GetRodadas1()
+        {
+            try
+            {
+                var firebase = new FirebaseClient(App.BaseUrl);
+                var rodadas = await firebase
+                    .Child("Jogos")
+                    .OrderByKey()
+                    .OnceAsync<object>();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

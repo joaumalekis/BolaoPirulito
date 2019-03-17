@@ -7,7 +7,10 @@ using Firebase.Database.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace BolaoPirulito.ViewModels
@@ -55,9 +58,8 @@ namespace BolaoPirulito.ViewModels
             try
             {
                 App.Token = await _firebaseAuthenticator.LoginWithEmailPassword(Email, Password);
-                await InserirApostadores();
-                await InserirRodadas();
-                await InserirTimesSerieA2019();
+                //await InserirApostadores();
+                //await InsertAllRodadas();
                 App.ApostadorLogado = await GetApostadorLogado(Email);
                 await Navigation.PushAsync(new HomePage());
             }
@@ -77,73 +79,122 @@ namespace BolaoPirulito.ViewModels
             return apostadores.ToList().FirstOrDefault(p => p.Object.Email.Equals(email))?.Object;
         }
 
-        private async Task InserirTimesSerieA2018()
+        public async Task<Jogo[]> GetAllRodadas(int rodada)
         {
-            var times = new[]
-            {
-                "São Paulo",
-                "Internacional",
-                "Flamengo",
-                "Palmeiras",
-                "Grêmio",
-                "Atlético-MG",
-                "Cruzeiro",
-                "Corinthians",
-                "América-MG",
-                "Fluminense",
-                "Bahia",
-                "Botafogo",
-                "Atlético-PR",
-                "Santos",
-                "Vasco",
-                "Vitória",
-                "Chapecoense",
-                "Sport",
-                "Ceará",
-                "Paraná"
-            };
+            var url = $"https://api.globoesporte.globo.com/tabela/d1a37fa4-e948-43a6-ba53-ab24ab3a45b1/fase/fase-unica-seriea-2019/rodada/{rodada}/jogos";
+            var uri = new Uri(url);
 
-            foreach (var time in times)
+            var _client = new HttpClient();
+
+            using (var response = await _client.GetAsync(uri))
             {
-                var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-                var id = Guid.NewGuid();
-                await firebase.Child("Times").Child(id.ToString()).PutAsync(new Time { Id = id, Nome = time });
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<Jogo[]>(content);
+                }
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Forbidden:
+                    case HttpStatusCode.Conflict:
+                    case HttpStatusCode.NotFound:
+                        throw new ArgumentException(response.Content.ReadAsStringAsync().Result);
+                    case HttpStatusCode.Unauthorized:
+                        throw new Exception("Token expirado");
+                    default:
+                        throw new ArgumentException(response.ReasonPhrase);
+                }
             }
         }
 
-        private async Task InserirTimesSerieA2019()
+        public async Task InsertAllRodadas()
         {
-            var times = new[]
+            for (int i = 1; i <= 38; i++)
             {
-                "Athletico-PR",
-                "Atlético-MG",
-                "Avaí",
-                "Bahia",
-                "Botafogo",
-                "CSA",
-                "Ceará",
-                "Chapecoense",
-                "Corinthians",
-                "Cruzeiro",
-                "Flamengo",
-                "Fluminense",
-                "Fortaleza",
-                "Goiás",
-                "Grêmio",
-                "Internacional",
-                "Palmeiras",
-                "Santos",
-                "São Paulo",
-                "Vasco"
-            };
+                var jogos = await GetAllRodadas(i);
 
-            foreach (var time in times)
-            {
+                var rodada = new Rodada
+                {
+                    //Id = Guid.NewGuid(),
+                    NumeroRodada = i,
+                    Jogos = jogos
+                };
+
                 var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-                var id = Guid.NewGuid();
-                await firebase.Child("Times").Child(id.ToString()).PutAsync(new Time { Id = id, Nome = time });
+
+                await firebase.Child("Jogos").Child(rodada.Id.ToString).PutAsync(rodada);
+
             }
         }
+
+        //private async Task InserirTimesSerieA2018()
+        //{
+        //    var times = new[]
+        //    {
+        //        "São Paulo",
+        //        "Internacional",
+        //        "Flamengo",
+        //        "Palmeiras",
+        //        "Grêmio",
+        //        "Atlético-MG",
+        //        "Cruzeiro",
+        //        "Corinthians",
+        //        "América-MG",
+        //        "Fluminense",
+        //        "Bahia",
+        //        "Botafogo",
+        //        "Atlético-PR",
+        //        "Santos",
+        //        "Vasco",
+        //        "Vitória",
+        //        "Chapecoense",
+        //        "Sport",
+        //        "Ceará",
+        //        "Paraná"
+        //    };
+
+        //    foreach (var time in times)
+        //    {
+        //        var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
+        //        var id = Guid.NewGuid();
+        //        await firebase.Child("Times").Child(id.ToString()).PutAsync(new Time { Id = id, Nome = time });
+        //    }
+        //}
+
+        //private async Task InserirTimesSerieA2019()
+        //{
+        //    var times = new[]
+        //    {
+        //        "Athletico-PR",
+        //        "Atlético-MG",
+        //        "Avaí",
+        //        "Bahia",
+        //        "Botafogo",
+        //        "CSA",
+        //        "Ceará",
+        //        "Chapecoense",
+        //        "Corinthians",
+        //        "Cruzeiro",
+        //        "Flamengo",
+        //        "Fluminense",
+        //        "Fortaleza",
+        //        "Goiás",
+        //        "Grêmio",
+        //        "Internacional",
+        //        "Palmeiras",
+        //        "Santos",
+        //        "São Paulo",
+        //        "Vasco"
+        //    };
+
+        //    foreach (var time in times)
+        //    {
+        //        var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
+        //        var id = Guid.NewGuid();
+        //        await firebase.Child("Times").Child(id.ToString()).PutAsync(new Time { Id = id, Nome = time });
+        //    }
+        //}
 
         private async Task InserirApostadores()
         {
@@ -168,109 +219,6 @@ namespace BolaoPirulito.ViewModels
 
                 await firebase.Child("Apostadores").Child(apostador.Id.ToString).PutAsync(apostador);
             }
-        }
-
-        private async Task InserirRodadas()
-        {
-            var firebase = new FirebaseClient(App.BaseUrl, new FirebaseOptions { AuthTokenAsyncFactory = () => Task.Delay(100).ContinueWith(t => App.Token) });
-            var id = Guid.NewGuid();
-            await firebase.Child("Rodadas").Child(id.ToString()).PutAsync(new Rodada
-            {
-                Id = id,
-                Nome = $"Rodada {1}",
-                NumeroRodada = 1,
-                Jogos = new List<Jogo>
-                    {
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("5a52bb3f-e53e-42ab-bea4-6296aad5b10a"), Nome = "Ceará"},
-                            TimeB = new Time{Id = Guid.Parse("eebd6b4c-299b-4c29-8ccc-f6053210125a"), Nome = "Santos"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0,
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("dab5dac6-8b3a-4725-a61e-d50c9b8d3bda"), Nome = "São Paulo"},
-                            TimeB = new Time{Id = Guid.Parse("7d17bdd6-9fac-4a7a-81c3-7e3d13a9db19"), Nome = "Paraná"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("b10537a5-3633-4901-b090-fffee655dfd3"), Nome = "Bahia"},
-                            TimeB = new Time{Id = Guid.Parse("31416414-d584-44cc-979f-bec596e27182"), Nome = "Internacional"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("537351be-b54a-4753-a413-0a628ea5dd79"), Nome = "Sport"},
-                            TimeB = new Time{Id = Guid.Parse("f909c6b8-27bb-4d4d-9af2-705374f1bdb0"), Nome = "América-MG"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("29f92bb7-4ea0-4a59-941e-12222479098d"), Nome = "Palmeiras"},
-                            TimeB = new Time{Id = Guid.Parse("d4a44afa-00b3-444c-9d57-dff8c25e946d"), Nome = "Botafogo"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("c613d563-443a-4668-8675-4cd4e27a30d6"), Nome = "Fluminense"},
-                            TimeB = new Time{Id = Guid.Parse("0bcaa928-92b9-4bf3-9bd4-90486c28a961"), Nome = "Corinthians"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("c39672c9-7959-4489-b8c3-324c54382dd8"), Nome = "Grêmio"},
-                            TimeB = new Time{Id = Guid.Parse("690a77e2-3557-4f5c-8db0-78e8129b5ef5"), Nome = "Cruzeiro"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("b7bc9c81-4c8c-4569-b807-6b2a53ffc85f"), Nome = "Flamengo"},
-                            TimeB = new Time{Id = Guid.Parse("a0d32011-7ae9-4701-96cb-5252557347bb"), Nome = "Vitória"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("f909c6b8-27bb-4d4d-9af2-705374f1bdb0"), Nome = "Atlético-MG"},
-                            TimeB = new Time{Id = Guid.Parse("9c315f25-1136-4c2d-8259-1a8aa02f4c71"), Nome = "Vasco"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("f909c6b8-27bb-4d4d-9af2-705374f1bdb0"), Nome = "Atlético-MG"},
-                            TimeB = new Time{Id = Guid.Parse("9c315f25-1136-4c2d-8259-1a8aa02f4c71"), Nome = "Vasco"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        },
-                        new Jogo
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeA = new Time{Id = Guid.Parse("a75ccfb1-acb6-4ba3-8a63-964694ed771f"), Nome = "Chapecoense"},
-                            TimeB = new Time{Id = Guid.Parse("90467803-dbf8-4ce1-ab3b-1d0f035a8e66"), Nome = "Atlético-PR"},
-                            GolsTimeA = 0,
-                            GolsTimeB = 0
-                        }
-                    }
-            });
         }
     }
 }
